@@ -9,13 +9,13 @@ SERVER_IP = "0.0.0.0"
 SERVER_PORT = 502
 UPDATE_INTERVAL = 0.5
 
-# task de atualização
 async def updating_task(bloco_hr):
+    """Task assíncrona para atualizar os valores dos registradores."""
     print(Fore.CYAN + "Task de atualização de dados iniciada.")
     
     while True:
         try:
-            # simulação
+            # Simula os dados
             tensao = int(random.uniform(218.0, 222.0) * 10)
             corrente = int(random.uniform(4.5, 8.0) * 10)
             temperatura = int(random.uniform(18.0, 25.0) * 10)
@@ -43,6 +43,8 @@ async def updating_task(bloco_hr):
 
 
 async def main():
+    """Configura e executa o servidor e a task de atualização."""
+    
     print(Fore.YELLOW + Style.BRIGHT + "========================================")
     print(Fore.YELLOW + Style.BRIGHT + "  Simulador Modbus TCP (Slave)")
     print(Fore.YELLOW + Style.BRIGHT + "========================================")
@@ -50,7 +52,7 @@ async def main():
     print(f"  {Style.DIM}Atualização:  {Fore.WHITE}A cada {UPDATE_INTERVAL} segundos")
     print(Style.RESET_ALL)
     
-    bloco_hr = ModbusSequentialDataBlock(0, [0] * 5)
+    bloco_hr = ModbusSequentialDataBlock(1, [0] * 5)
     
     device_context = ModbusDeviceContext(
         di=None,
@@ -72,7 +74,6 @@ async def main():
     
     task_atualizacao = asyncio.create_task(updating_task(bloco_hr))
     
-    # Executa
     try:
         await asyncio.gather(task_servidor, task_atualizacao)
     finally:
